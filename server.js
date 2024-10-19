@@ -21,17 +21,16 @@ const io = new Server(server, {
 const users = {};
 const socketToRoom = {};
 
-const receivedChunks = {};
 
 // Use CORS middleware
 app.use(cors());
 
 // Serve static files from the build directory
-app.use(express.static(path.join(__dirname, "peerto", "build"))); // Corrected the path
+app.use(express.static(path.join(__dirname, "build"))); // Corrected the path
 
 // Define a catch-all route that serves the index.html file
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "peerto", "build", "index.html"));
+  res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 io.on("connection", (socket) => {
@@ -88,7 +87,6 @@ io.on("connection", (socket) => {
 
   socket.on("start file transfer",({roomID , fileName, fileSize})=>
   {
-    console.log(`file information ${fileSize}`);
     const usersInThisRoom = users[roomID].filter((id) => id !== socket.id);
     io.to(usersInThisRoom).emit("reciving file information",{roomID , fileName, fileSize});
   });
@@ -108,7 +106,6 @@ io.on("connection", (socket) => {
       }
     }
     delete socketToRoom[socket.id];
-    console.log("Client disconnected", socket.id);
   });
 });
 
